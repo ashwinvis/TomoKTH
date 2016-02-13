@@ -49,9 +49,8 @@ def imsave(filename, arr):
     filename :  string
             the absolute path of the image file that is to be read.
     """
-    if filename[-3:] is 'txt':
-        with open(filename, 'w') as f:
-            f.write(np.array2string(arr))
+    if filename[-3:] == 'txt':
+        np.savetxt(filename, arr, fmt='%d')
     else:
         _io_.imsave(filename, arr)
 

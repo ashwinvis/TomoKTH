@@ -25,7 +25,8 @@ Save the files under the following path & it will be ignored by git. (Maybe an u
 - examples/assignment/particle_images/
 
 ### Tasks to do / Assignee
-- [ ] Image loading / jadelord
+- [x] Image loading / jadelord
+- [ ] Classes for storing calibration and particle datasets / jadelord
 - [ ] Dewarping
 - [ ] Calibration
 - [ ] Statistics: Image density calculation, PDF of intensities
@@ -39,3 +40,4 @@ Save the files under the following path & it will be ignored by git. (Maybe an u
 * LEGI UVmat: [MATLAB code](http://servforge.legi.grenoble-inp.fr/projects/soft-uvmat) and [tutorial](http://servforge.legi.grenoble-inp.fr/projects/soft-uvmat/wiki/Tutorial)
 * Image handling: [pillow](https://pypi.python.org/pypi/Pillow/3.1.0), [scikit-image](https://pypi.python.org/pypi/scikit-image/0.11.3), [opencv](http://docs.opencv.org/3.1.0/)
 * Plotting: [matplotlib](http://matplotlib.org/gallery.html), [MayaVi](http://docs.enthought.com/mayavi/mayavi/auto/examples.html#example-gallery)
+* Data structures: [h5py](http://docs.h5py.org/en/latest/quick.html)

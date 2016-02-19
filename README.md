@@ -26,13 +26,15 @@ Save the files under the following path & it will be ignored by git. (Maybe an u
 
 ### Tasks to do / Assignee
 - [x] Image loading / jadelord
-- [ ] Classes for storing calibration and particle datasets / jadelord
-- [ ] Dewarping
-- [ ] Calibration
-- [ ] Statistics: Image density calculation, PDF of intensities
-- [ ] Preprocessing: Threshold, sliding minima, Gaussian smoothing
-- [ ] MLOS
+- [x] Classes for storing calibration and particle datasets / jadelord
+- [ ] Calibration / mubasharkhan
+- [ ] Preprocessing: Threshold, sliding minima, Gaussian smoothing / krishna
+- [ ] Class for storing voxel and velocity vector datasets / jadelord
+- [ ] Operators for tomo reconstruction: MLOS/MART/SMART / jadelord
+- [ ] Operators for 3D PIV: single pass cross-correlation
+#### Future
 - [ ] Outlier or bad vector removal
+- [ ] Statistics: Image density calculation, PDF of intensities ()
 
 ### External Resources
 * Learn Python: [Codecademy](https://www.codecademy.com/en/) or [tutorial in official Python documentation](https://docs.python.org/2/tutorial/index.html).
@@ -41,3 +43,5 @@ Save the files under the following path & it will be ignored by git. (Maybe an u
 * Image handling: [pillow](https://pypi.python.org/pypi/Pillow/3.1.0), [scikit-image](https://pypi.python.org/pypi/scikit-image/0.11.3), [opencv](http://docs.opencv.org/3.1.0/)
 * Plotting: [matplotlib](http://matplotlib.org/gallery.html), [MayaVi](http://docs.enthought.com/mayavi/mayavi/auto/examples.html#example-gallery)
 * Data structures: [h5py](http://docs.h5py.org/en/latest/quick.html)
+* Ships-project: [TomoRecon, TomoSim etc. in Google Code](http://ships-project.googlecode.com/svn/trunk/tomo/)
+* Cernlib: Cylinder-Sphere intersection [docs](http://dollywood.itp.tuwien.ac.at/cernlib/shortwrupsdir/v700/top.html), [code](http://cernlib.web.cern.ch/cernlib/download/2006_source/src/mathlib/gen/v/)

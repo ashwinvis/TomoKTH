@@ -7,6 +7,7 @@ class DataBase(object):
         """Initialize attributes"""
 
         self.path = path
+        self.f = None
         self.h5file = None
         self.h5dict = dict()
         self.image_type = None
@@ -33,7 +34,11 @@ class DataBase(object):
 
     def open_h5(self, mode='r'):
         """Returns a h5py.File object"""
-        return h5py.File(self.h5file, mode)
+        if self.f is not None:
+            self.f.close()
+
+        self.f = h5py.File(self.h5file, mode)
+        return self.f
 
     def create_h5(self):
         """Creates a HDF5 file with all data in it"""
@@ -44,24 +49,26 @@ class DataBase(object):
             for key in f['/'].keys():
                 self.h5dict[key] = f[key].keys()
 
-    def get_camera_grp(self, camera, f=None):
+    def get_grp(self, **kwargs):
         """Returns a HDF5 group containing datasets of a particular camera.
 
         Parameters
         ----------
-        camera : int
-            Index of the camera
+        kwargs : dict
+            All attributes to be matched.
 
-        f : h5py.File object (optional)
-            Can be obtained by using open_h5 function.
         """
 
-        if f is None:
-            f = self.open_h5()
+        f = self.open_h5()
 
         for grp in f.values():
-            if grp.attrs['cam'] == camera:
-                return grp
+        match = True
+        for attr_key, attr_value in kwargs.items():
+            if grp.attrs[attr_key] != attr_value:
+                match = False
+
+        if match:
+            return grp
 
         raise ValueError('Cannot locate camera group in ' + self.h5file)
 

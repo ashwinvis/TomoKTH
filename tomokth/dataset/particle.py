@@ -19,7 +19,7 @@ from .base import DataBase
 
 
 class ParticleData(DataBase):
-    """Contains the calibration data object and assosciated member functions."""
+    """Contains the particle data object and assosciated member functions."""
 
     def config(self, filename='particle.h5'):
         """Configure defaults and initialize paths"""
@@ -31,28 +31,36 @@ class ParticleData(DataBase):
         camera_index = int(camera[-1:])
         ab = snapshot[0]
         time = int(snapshot[1:])
-        return camera, camera_index, ab, time
+        time_str = 't=' + snapshot[1:]
+        return camera, camera_index, ab, time, time_str
 
     def create_h5(self):
-        """Creates a HDF5 file with all calibration data in it"""
+        """Creates a HDF5 file with all particle data in it"""
         list_of_images = glob(self.path + '/*.' + self.image_type)
 
         with self.open_h5('a') as f:
             for path in list_of_images:
                 arr = imread(path)
                 fname = os.path.basename(path)
-                camera, camera_index, ab, time = self._parse_image_path(path)
-                if camera not in f.keys():
-                    grp = f.create_group(camera)
-                    grp.attrs['cam'] = camera_index
+                camera, camera_index, ab, time, time_str = self._parse_image_path(path)
+                if time_str not in f.keys():
+                    grp = f.create_group(time_str)
+                    grp.attrs['t'] = time
                 else:
-                    grp = f[camera]
+                    grp = f[time_str]
+
+                if camera not in grp.keys():
+                    subgrp = grp.create_group(camera)
+                    subgrp.attrs['t'] = time
+                    subgrp.attrs['cam'] = camera_index
+                else:
+                    subgrp = grp[camera]
 
                 try:
-                    dset = grp.create_dataset(fname, data=arr)
+                    dset = subgrp.create_dataset(fname, data=arr)
+                    dset.attrs['t'] = time
                     dset.attrs['cam'] = camera_index
                     dset.attrs['ab'] = ab
-                    dset.attrs['t'] = time
                 except RuntimeError:
                     print('WARNING: Image dataset ' + fname + ' already exists in ' + self.h5file)
                     pass
@@ -60,8 +68,8 @@ class ParticleData(DataBase):
         self.refresh_h5dict()
 
     def get_dset(self, camera, ab, time):
-        """Returns a numpy array corresponding to a particle image stored as a dataset in the HDF5 file.
-        Array located by matching the following parameters.
+        """Returns a numpy array corresponding to a particle image stored as a dataset
+        in the HDF5 file. Array located by matching the following parameters.
 
         Parameters
         ----------

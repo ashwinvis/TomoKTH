@@ -32,6 +32,7 @@ Save the files under the following path & it will be ignored by git. (Maybe an u
 - [ ] Class for storing voxel and velocity vector datasets / jadelord
 - [ ] Operators for tomo reconstruction: MLOS/MART/SMART / jadelord
 - [ ] Operators for 3D PIV: single pass cross-correlation
+
 #### Future
 - [ ] Outlier or bad vector removal
 - [ ] Statistics: Image density calculation, PDF of intensities ()

@@ -16,7 +16,7 @@ from scipy.integrate import dblquad
 from sympy import elliptic_pi
 
 
-def ellippi(k, a2):
+def ellippi(n, m):
     """
     Complete elliptic integral of third kind (simplified version).
 
@@ -27,14 +27,15 @@ def ellippi(k, a2):
     F. LAMARCHE and C. LEROY, Evaluation of the volume of a sphere with a cylinder by elliptic integrals,
         Computer Phys. Comm. 59 (1990) pg. 365
     """
-    k2 = k ** 2
+    a2 = n
+    k2 = m
     k2_a2 = k2 + a2
     phi = np.arcsin(a2 / k2_a2)
 
     Kc = ellipk(k2)
     Ec = ellipe(k2)
-    Ki = ellipkinc(phi, 1. - k2)
-    Ei = ellipeinc(phi, 1. - k2)
+    Ki = ellipkinc(phi, (1. - k2) ** 1)
+    Ei = ellipeinc(phi, (1. - k2) ** 1)
 
     c1 = k2 / k2_a2
     c2 = np.sqrt(a2 / (1 + a2) / k2_a2)
@@ -77,10 +78,7 @@ def vintersect_sphcyl(rs, rc, b):
 
     """
     pi = np.pi
-    rc2 = rc ** 2
-    rs2 = rs ** 2
-    rs3 = rs * rs2
-    vsph = 4. * pi / 3 * rs3
+    vsph = 4. * pi / 3 * rs ** 3
 
     if b >= (rs + rc):
         return 0.
@@ -88,46 +86,60 @@ def vintersect_sphcyl(rs, rc, b):
         if rs < rc:
             vi = vsph
         else:
-            vi = vsph - 4. / 3 * pi * (rs2 - rc2) ** 1.5
+            vi = vsph - 4. / 3 * pi * (rs ** 2 - rc ** 2) ** 1.5
     elif rc > (rs + b):
         vi = vsph
     else:
-        A = max(rs2, (b + rc) ** 2)
-        B = min(rs2, (b + rc) ** 2)
-        C = (b - rc) ** 2
-        k2 = (B - C) / (A - C)
-        s = (b + rc) * (b - rc)
-        e1 = ellipk(k2)
-        e2 = ellipe(k2)
-        if C != 0.:
-            a2 = 1 - B / C
-            e3 = elliptic_pi(a2, k2)
+        vi = vsph * heaviside(rc - b) + _vintersect_sphcyl_ellip(rs, rc, b)
 
-        if rs == (b + rc):
-            if b == rc:
-                vi = - 4. / 3 * (A - C) ** 0.5 * (s + 2. / 3 * (A - C))
-            else:
-                vi = (4. / 3 * rs3 * np.arctan(2 * (b * rc) ** 0.5 / (b - rc))
-                      - 4. / 3 * (A - C) ** 0.5 * (s + 2. / 3 * (A - C)))
-        elif rs < (b + rc):
-            if b == rc:  # s = 0; C = 0
-                vi = 4. / 3 / A ** 0.5 * (e1 * (A - B) * (3 * B - 2 * A) / 3
-                                          + e2 * A * (2 * A - 4 * B) / 3 )
-            else:
-                vi = (4. / 3 / (A - C) ** 0.5
-                      * (e3 * B ** 2 * s / C
-                         + e1 * (s * (A - 2. * B) + (A - B) * (3 * B - C - 2 * A) / 3)
-                         + e2 * (A - C) * (-s + (2 * A + 2 * C - 4 * B) / 3)))
+    return vi
+
+
+def _vintersect_sphcyl_ellip(rs, rc, b):
+    """
+    The cases for which evaluation the volume of intersection of a sphere with a cylinder
+    makes use of elliptic integrals.
+
+    """
+    rs3 = rs ** 3
+    bprc = b + rc
+    bmrc = b - rc
+    A = max(rs ** 2, bprc ** 2)
+    B = min(rs ** 2, bprc ** 2)
+    C = bmrc ** 2
+    AB = A - B
+    AC = A - C
+    BC = B - C
+    k2 = BC / AC
+    s = bprc * bmrc
+    e1 = ellipk(k2)
+    e2 = ellipe(k2)
+
+    if bmrc == 0:
+        if rs == bprc:
+            vi = - 4. / 3 * AC ** 0.5 * (s + 2. / 3 * AC)
+        elif rs < bprc:
+            vi = 4. / 3 / A ** 0.5 * (e1 * AB * (3 * B - 2 * A) +
+                                      e2 * A * (2 * A - 4 * B)) / 3
         else:
-            if b == rc:  # s = 0; C = 0
-                vi = 4. / 3 / A ** 0.5 * (e1 * (A - B) * A / 3
-                                          - e2 * A * (4 * A - 2 * B) / 3 )
-            else:
-                vi = 4. / 3 / (A - C) ** 0.5 * (e3 * A ** 2 * s / C
-                                                - e1 * (A * s - (A - B) * (A - C) / 3.)
-                                                - e2 * (A - C) * (s + (4. * A - 2 * B - 2 * C) / 3))
+            vi = 4. / 3 / A ** 0.5 * (e1 * AB * A -
+                                      e2 * A * (4 * A - 2 * B)) / 3
+    else:
+        a2 = 1 - B / C
+        e3 = elliptic_pi(a2, k2)
 
-        vi = vi + vsph * heaviside(rc - b)
+        if rs == bprc:
+            vi = (4. / 3 * rs3 * np.arctan(2 * (b * rc) ** 0.5 / bmrc) -
+                  4. / 3 * AC ** 0.5 * (s + 2. / 3 * AC))
+        elif rs < bprc:
+            vi = (4. / 3 / AC ** 0.5 *
+                  (e3 * B ** 2 * s / C +
+                   e1 * (s * (A - 2. * B) + AB * (3 * B - C - 2 * A) / 3) +
+                   e2 * AC * (-s + (2 * A + 2 * C - 4 * B) / 3)))
+        else:
+            vi = 4. / 3 / AC ** 0.5 * (e3 * A ** 2 * s / C -
+                                       e1 * (A * s - AB * AC / 3.) -
+                                       e2 * AC * (s + (4. * A - 2 * B - 2 * C) / 3))
     return vi
 
 

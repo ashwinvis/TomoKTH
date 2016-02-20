@@ -97,7 +97,7 @@ def vintersect_sphcyl(rs, rc, b):
 
 def _vintersect_sphcyl_ellip(rs, rc, b):
     """
-    The cases for which evaluation the volume of intersection of a sphere with a cylinder
+    The cases for which evaluating the volume of intersection of a sphere with a cylinder
     makes use of elliptic integrals.
 
     """
@@ -157,3 +157,53 @@ def vintersect_sphcyl_quad(rs, rc, b):
                          (rs ** 2 - x ** 2) ** 0.5)
     vi, abserr = dblquad(func, a, b, gfun, hfun)
     return 4. * vi
+
+
+def distance_los_voxel(vec_pix, vec_vox, vec_normal):
+    """
+    Determines the distance between the line of sight from a pixel along the normal
+    and the voxel center.
+
+    Parameters
+    ----------
+    vec_pix : nd-array
+        Position vector of the pixel center
+
+    vec_vox : nd-array
+        Postition vector of the voxel center
+
+    vec_normal : nd-array
+        Normal vector of the image plane
+
+    """
+    vec_pixvox = vec_vox - vec_pix
+    vec_dist = np.cross(vec_pixvox, vec_normal)
+    b = np.linalg.norm(vec_dist) / np.linalg.norm(vec_normal)
+    return b
+
+
+def calc_weight(rpix, vec_pix, rvox, vec_vox, vec_normal):
+    """
+    Calculates the weightage of a pixel on voxel.
+
+    Parameters
+    ---------
+    rpix : float
+        Radius of a pixel
+
+    vec_pix : nd-array
+        Position vector of the pixel center
+
+    rvox : float
+        Radius of a voxel
+
+    vec_vox : nd-array
+        Postition vector of the voxel center
+
+    vec_normal : nd-array
+        Normal vector of the image plane
+
+    """
+    b = distance_los_voxel(vec_pix, vec_vox, vec_normal)
+    w = vintersect_sphcyl(rvox, rpix, b) / vintersect_sphcyl(rvox, rvox, 0.)
+    return w

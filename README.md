@@ -28,9 +28,9 @@ Save the files under the following path & it will be ignored by git. (Maybe an u
 - [x] Image loading / jadelord
 - [x] Classes for storing calibration and particle datasets / jadelord
 - [ ] Calibration / mubasharkhan
-- [ ] Preprocessing: Threshold, sliding minima, Gaussian smoothing / krishna
+- [x] Preprocessing: Threshold, sliding minima, Gaussian smoothing / jadelord
 - [ ] Class for storing voxel and velocity vector datasets / jadelord
-- [ ] Operators for tomo reconstruction: MLOS/MART/SMART / jadelord
+- [ ] Operators for tomo reconstruction: MLOS/MART/SMART
 - [ ] Operators for 3D PIV: single pass cross-correlation
 
 #### Future

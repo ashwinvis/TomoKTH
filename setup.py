@@ -42,5 +42,6 @@ setup(name='tomokth',
       author='Ashwin, Krishna, Mubashir',
       author_email='avmo@kth.se',
       license='GPL',
-      install_requires=['scipy', 'matplotlib', 'h5py', 'scikit-image', 'sympy', 'fluiddyn']
+      install_requires=['scipy', 'matplotlib', 'h5py', 'scikit-image',
+                        'sympy', 'fluiddyn', 'pymatbridge']
       )

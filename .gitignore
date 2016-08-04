@@ -1,5 +1,7 @@
 # User set ignore
 *.h5
+*.swp
+*.swo
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

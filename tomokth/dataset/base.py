@@ -62,15 +62,16 @@ class DataBase(object):
         f = self.open_h5()
 
         for grp in f.values():
-        match = True
-        for attr_key, attr_value in kwargs.items():
-            if grp.attrs[attr_key] != attr_value:
-                match = False
+            match = True
+            for attr_key, attr_value in kwargs.items():
+                if grp.attrs[attr_key] != attr_value:
+                    match = False
 
-        if match:
-            return grp
+            if match:
+                return grp
 
-        raise ValueError('Cannot locate camera group in ' + self.h5file)
+        if not match:
+            raise ValueError('Cannot locate camera group in ' + self.h5file)
 
     def get_dset(self, camera, **kwargs):
         """Returns a numpy array corresponding to a calibration image stored as a dataset in the HDF5 file.

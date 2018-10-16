@@ -1,7 +1,7 @@
 # TomoKTH
 ![](http://unmaintained.tech/badge.svg)
 
-**See [FluidImage](fluidimage.readthedocs.io) for a working implementation of [camera calibration](https://fluidimage.readthedocs.io/en/latest/ipynb/tuto_opencv_calibration.html) and [reconstruction](https://fluidimage.readthedocs.io/en/latest/ipynb/tuto_opencv_tomo_reconstruct.html).**
+**See [FluidImage](https://fluidimage.readthedocs.io) for a working implementation of [camera calibration](https://fluidimage.readthedocs.io/en/latest/ipynb/tuto_opencv_calibration.html) and [reconstruction](https://fluidimage.readthedocs.io/en/latest/ipynb/tuto_opencv_tomo_reconstruct.html).**
 
 Tomographic PIV code done as a part of a KTH course
 
